@@ -8,7 +8,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../config/redux/store";
 import { authenticate } from "../config/redux/reducers/auth";
-import toast from "react-hot-toast";
 import GlobalAuth from "./GlobalAuth";
 import { Device, setDevice } from "../config/redux/reducers/config";
 import GlobalNavigation from "./GlobalNavigation";
@@ -49,7 +48,6 @@ export default function GlobalLayout({
       } else {
         dispatch(authenticate({ token: token })).then((res: any) => {
           if (res.error) {
-            toast.error(res.error.message);
           } else {
             setShowAuth(false);
           }
