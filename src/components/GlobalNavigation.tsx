@@ -108,7 +108,42 @@ const LogoutButton = ({ isMobile }: { isMobile: boolean }) => {
   );
 };
 
+const ReloadWebAppButton = ({ isMobile }: { isMobile: boolean }) => {
+  if (!isMobile) return null;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleReload = () => {
+    window.location.reload();
+  };
+
+  const shouldExpand = isHovered && !isMobile;
+
+  return (
+    <button
+      className={`cursor-pointer flex items-center p-2 rounded-lg bg-highlight/50 hover:bg-highlight/85 transition-all ease-in-out duration-600 ${
+        isHovered ? "bg-highlight/85" : ""
+      } ${shouldExpand ? "gap-2" : "gap-0"}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleReload}
+    >
+      <span
+        className={`font-bold whitespace-nowrap overflow-hidden transition-all duration-600 ${
+          shouldExpand
+            ? "max-w-xs opacity-100"
+            : "max-w-0 opacity-0 w-0 text-transparent"
+        }`}
+      >
+        RELOAD
+      </span>
+      <img src="/icons/reload.svg" alt="" width={25} />
+    </button>
+  );
+};
+
 const ResetWebAppButton = ({ isMobile }: { isMobile: boolean }) => {
+  if (!isMobile) return null;
+
   const [isHovered, setIsHovered] = useState(false);
   const { openModal } = useModal();
   const dispatch = useDispatch<AppDispatch>();
@@ -169,6 +204,7 @@ export default function GlobalNavigation() {
         ))}
       </div>
       <div className="flex flex-col items-end gap-2">
+        <ReloadWebAppButton isMobile={isMobile} />
         <ResetWebAppButton isMobile={isMobile} />
         <LogoutButton isMobile={isMobile} />
       </div>
