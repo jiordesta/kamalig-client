@@ -14,6 +14,8 @@ import {
 import { HEADERTYPES } from "../../libs/enums";
 import SelectInput from "../inputs/SelectInput";
 import { getShopOwners } from "../../config/redux/reducers/config";
+import DatePicker from "../inputs/DatePicker";
+import { getNewDate } from "../../libs/utils";
 
 export default function TransactionTab() {
   const [refresh, setRefresh] = useState(false);
@@ -26,8 +28,9 @@ export default function TransactionTab() {
     setRefresh(!refresh);
   };
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<any>({
     userId: undefined,
+    transactionDate: getNewDate(),
   });
 
   const { shopOwners } = useSelector((state: RootState) => state.config);
@@ -35,6 +38,7 @@ export default function TransactionTab() {
   const handleClearFilters = () => {
     setFilters({
       userId: undefined,
+      transactionDate: undefined,
     });
   };
 
@@ -124,6 +128,14 @@ export default function TransactionTab() {
         dkey={"id"}
         fkey={"userId"}
         labelKey="name"
+      />
+    </div>,
+    <div key="transactionDate" className="w-75">
+      <DatePicker
+        key="transactionDate"
+        value={filters}
+        setter={setFilters}
+        dkey={"transactionDate"}
       />
     </div>,
     <TableButton
