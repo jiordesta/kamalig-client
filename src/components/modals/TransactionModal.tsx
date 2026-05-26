@@ -89,7 +89,7 @@ export default function TransactionModal({ payload }: ModalProps) {
 
   const interActiveInputs = [
     <div className="flex flex-col md:flex-row gap-2" key="transactionDetails">
-      <div className="w-[60%] md:w-full">
+      <div className="md:w-[60%] w-full">
         <DatePicker
           key="transactionDate"
           value={form}
@@ -97,7 +97,7 @@ export default function TransactionModal({ payload }: ModalProps) {
           dkey={"transactionDate"}
         />
       </div>
-      <div className="w-[40%] md:w-full">
+      <div className="md:w-[40%] w-full">
         <SelectInput
           key="userId"
           options={shopOwners || []}
