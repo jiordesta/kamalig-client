@@ -117,3 +117,46 @@ export function isQueueDuplicate(queue: any[], service: string) {
   }
   return false;
 }
+
+//@ts-ignore
+export enum NetworkIssueType {
+  NO_INTERNET = "NO_INTERNET",
+  TIMEOUT_SLOW = "TIMEOUT_SLOW",
+  SERVER_DOWN = "SERVER_DOWN",
+  API_ERROR = "API_ERROR", // Backend is up but returned a normal error (400, 401, 500, etc.)
+}
+
+export function diagnoseError(error: any): NetworkIssueType {
+  // 1. Check direct physical browser connection state first
+  if (!navigator.onLine) {
+    return NetworkIssueType.NO_INTERNET;
+  }
+
+  // 2. Handle Axios request error structures
+  if (error.isAxiosError) {
+    // Timeout reached before server responded
+    if (error.code === "ECONNABORTED" || error.message.includes("timeout")) {
+      return NetworkIssueType.TIMEOUT_SLOW;
+    }
+    // No response object received from the network (e.g., net::ERR_CONNECTION_REFUSED)
+    if (!error.response) {
+      return NetworkIssueType.SERVER_DOWN;
+    }
+    return NetworkIssueType.API_ERROR;
+  }
+
+  // 3. Handle Standard Native Fetch API error structures
+  if (
+    error instanceof TypeError &&
+    error.message.toLowerCase().includes("failed to fetch")
+  ) {
+    // If we have internet access but fetch failed, the server layout itself rejected the connection
+    return NetworkIssueType.SERVER_DOWN;
+  }
+
+  if (error.name === "AbortError") {
+    return NetworkIssueType.TIMEOUT_SLOW;
+  }
+
+  return NetworkIssueType.API_ERROR;
+}

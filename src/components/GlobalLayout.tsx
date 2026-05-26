@@ -13,6 +13,8 @@ import { Device, setDevice } from "../config/redux/reducers/config";
 import GlobalNavigation from "./GlobalNavigation";
 import { isMobile } from "react-device-detect";
 import GlobalModalHandler from "./GlobalModalHandler";
+import toast from "react-hot-toast";
+import { diagnoseError, NetworkIssueType } from "../libs/utils";
 
 type GlobalLayoutProps = {
   children: React.ReactNode;
@@ -48,6 +50,16 @@ export default function GlobalLayout({
       } else {
         dispatch(authenticate({ token: token })).then((res: any) => {
           if (res.error) {
+            const issue = diagnoseError(res.error);
+            if (issue === NetworkIssueType.NO_INTERNET) {
+              toast("NO INTERNET");
+            } else if (issue === NetworkIssueType.TIMEOUT_SLOW) {
+              toast("SLOW INTERNET");
+            } else if (issue === NetworkIssueType.SERVER_DOWN) {
+              toast("SERVER IS OFFLINE");
+            } else {
+              toast(res.error.message);
+            }
           } else {
             setShowAuth(false);
           }
