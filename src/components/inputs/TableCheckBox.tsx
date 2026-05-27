@@ -29,9 +29,9 @@ export default function TableCheckBox({
 
   useEffect(() => {
     if (isSelectedAll) {
-      setSelected(data.map((item) => item.id));
+      setSelected(data?.map((item) => item.id));
     } else {
-      if (selected.length === data.length) setSelected([]);
+      if (selected?.length === data?.length) setSelected([]);
     }
   }, [isSelectedAll, refresh]);
 
