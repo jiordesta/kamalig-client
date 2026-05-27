@@ -19,4 +19,5 @@ export const TABS = {
   ONBOARDING: "onboard",
   RESTOCKS: "restocks",
   TRANSACTION: "transaction",
+  REPORTS: "reports",
 };

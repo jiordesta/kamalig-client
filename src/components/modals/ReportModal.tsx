@@ -4,27 +4,24 @@ import type { ModalProps } from "../GlobalModal";
 import GlobalModal from "../GlobalModal";
 import GlobalLoader from "../GlobalLoader";
 import toast from "react-hot-toast";
-import { getItemList, getShopOwners } from "../../config/redux/reducers/config";
+import { getItemList } from "../../config/redux/reducers/config";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../config/redux/store";
 import DatePicker from "../inputs/DatePicker";
-import SelectInput from "../inputs/SelectInput";
 import { getNewDate } from "../../libs/utils";
 import FastOrderInput from "../inputs/FastOrderInput";
 
-//TODO: needs to be refactored
-export default function TransactionModal({ payload }: ModalProps) {
+export default function ReportModal({ payload }: ModalProps) {
   console.log(payload);
   const { closeModal } = useModal();
   const dispatch = useDispatch<AppDispatch>();
   const { token } = useSelector((state: RootState) => state.auth);
-  const transactionForm = {
-    userId: payload?.data?.userId,
-    transactionDate: getNewDate(),
-    items: payload?.data?.transactionItems || [],
+  const reportForm = {
+    reportDate: getNewDate(),
+    items: payload?.data?.reportItems || [],
   };
-  const { items, shopOwners } = useSelector((state: RootState) => state.config);
-  const [form, setForm] = useState(transactionForm);
+  const { items } = useSelector((state: RootState) => state.config);
+  const [form, setForm] = useState(reportForm);
   const [isLoading, setLoading] = useState(false);
 
   const [refresh, setRefresh] = useState(false);
@@ -39,10 +36,7 @@ export default function TransactionModal({ payload }: ModalProps) {
     const fetchInitialData = async () => {
       setLoading(true);
       try {
-        await Promise.all([
-          dispatch(getItemList({ token })).unwrap(),
-          dispatch(getShopOwners({ token })).unwrap(),
-        ]);
+        await Promise.all([dispatch(getItemList({ token })).unwrap()]);
       } catch (error) {
         console.error("Failed to load initial data:", error);
       } finally {
@@ -89,31 +83,16 @@ export default function TransactionModal({ payload }: ModalProps) {
 
   const interActiveInputs = [
     <div className="flex flex-col md:flex-row gap-2" key="transactionDetails">
-      <div className="md:w-[60%] w-full">
+      <div className="w-full">
         <DatePicker
-          key="transactionDate"
+          key="reportDate"
           value={form}
           setter={setForm}
-          dkey={"transactionDate"}
-        />
-      </div>
-      <div className="md:w-[40%] w-full">
-        <SelectInput
-          key="userId"
-          options={shopOwners || []}
-          placeholder="Who ordered?"
-          value={form}
-          setter={setForm}
-          dkey={"id"}
-          fkey={"userId"}
-          labelKey="name"
+          dkey={"reportDate"}
         />
       </div>
     </div>,
-    <div
-      key="transactionItems"
-      className="flex flex-col gap-2 h-50 overflow-auto"
-    >
+    <div key="reportItems" className="flex flex-col gap-2 h-50 overflow-auto">
       {items.map((item) => {
         return (
           <FastOrderInput

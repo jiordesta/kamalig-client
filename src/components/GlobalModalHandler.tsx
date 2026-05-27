@@ -2,6 +2,7 @@ import { ModalType, type ModalState } from "./hooks/UseModal";
 import ConfirmationModal from "./modals/ConfirmationModal";
 import DisplayModal from "./modals/DisplayModal";
 import ProductModal from "./modals/ProductModal";
+import ReportModal from "./modals/ReportModal";
 import RestockModal from "./modals/RestockModal";
 import TransactionModal from "./modals/TransactionModal";
 import UserModal from "./modals/UserModal";
@@ -32,6 +33,9 @@ export default function GlobalModalHandler({ modal }: GlobalModalHandlerProps) {
       )}
       {modal?.type === ModalType.DISPLAY && (
         <DisplayModal action={modal.action} payload={modal.payload} />
+      )}
+      {modal?.type === ModalType.REPORT && (
+        <ReportModal action={modal.action} payload={modal.payload} />
       )}
     </div>
   );

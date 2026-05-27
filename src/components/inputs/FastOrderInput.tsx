@@ -85,7 +85,7 @@ export default function FastOrderInput({
     return (
       <div className="flex gap-2">
         <div className="flex flex-row gap-2 justify-end w-full">
-          <button
+          {/* <button
             className={buttonStyle}
             onClick={() => {
               updateFormField("additional", [], setForm);
@@ -94,7 +94,7 @@ export default function FastOrderInput({
             }}
           >
             reset
-          </button>
+          </button> */}
           <button className={buttonStyle} onClick={() => onUpdate(0)}>
             clear
           </button>
@@ -109,6 +109,9 @@ export default function FastOrderInput({
           </button>
           <button className={buttonStyle} onClick={() => onUpdate(10)}>
             +10
+          </button>
+          <button className={buttonStyle} onClick={() => onUpdate(100)}>
+            +100
           </button>
         </div>
       </div>

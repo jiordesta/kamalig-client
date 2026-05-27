@@ -23,6 +23,11 @@ const NAV_BUTTONS: NavButtonType[] = [
     path: TABS.TRANSACTION,
     icon: "/icons/transaction.svg",
   },
+  {
+    label: TABS.REPORTS,
+    path: TABS.REPORTS,
+    icon: "/icons/report.svg",
+  },
 ];
 
 interface ButtonProps extends NavButtonType {

@@ -11,6 +11,8 @@ import restock from "./reducers/restock";
 import stock from "./reducers/stock";
 import transaction from "./reducers/transaction";
 import auth, { reset } from "./reducers/auth";
+import report from "./reducers/report";
+
 const appReducer = combineReducers({
   auth,
   config,
@@ -19,6 +21,7 @@ const appReducer = combineReducers({
   restock,
   stock,
   transaction,
+  report: report,
 });
 
 const rootReducer = (

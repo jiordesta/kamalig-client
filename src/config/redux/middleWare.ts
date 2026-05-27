@@ -62,6 +62,14 @@ export const middleWare: Middleware = (store) => (next) => (action: any) => {
   }
 
   if (
+    action.type.startsWith("/report/") &&
+    action.type.endsWith("/fulfilled")
+  ) {
+    const state = store.getState();
+    saveToStorage("report", state.config);
+  }
+
+  if (
     action.type.startsWith("/transaction/") &&
     action.type.endsWith("/fulfilled")
   ) {
