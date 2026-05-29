@@ -16,6 +16,7 @@ import SelectInput from "../inputs/SelectInput";
 import { getShopOwners } from "../../config/redux/reducers/config";
 import DatePicker from "../inputs/DatePicker";
 import { getNewDate } from "../../libs/utils";
+import toast from "react-hot-toast";
 
 export default function TransactionTab() {
   const [refresh, setRefresh] = useState(false);
@@ -62,6 +63,11 @@ export default function TransactionTab() {
   };
 
   const handleUpdateTransaction = () => {
+    if (selected.length !== 1) {
+      toast.error("Please select one");
+      return;
+    }
+
     const callBack = async (payload: any, transactionId?: number) => {
       if (!token) return;
       return await dispatch(
