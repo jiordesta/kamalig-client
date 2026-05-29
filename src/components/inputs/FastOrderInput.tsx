@@ -60,6 +60,13 @@ export default function FastOrderInput({
       return;
     }
 
+    if (input === 0) {
+      updateFormField("additional", [], setForm);
+      updateFormField("quantity", 0, setForm);
+      setWasClicked(false);
+      return;
+    }
+
     if (wasClicked) {
       const lastIndex = form.additional.length - 1;
 
