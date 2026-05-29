@@ -24,7 +24,6 @@ export const newAsyncThunk = (path: string, type: ApiType) => {
 
       let response;
       if (type === ApiType.GET) {
-        console.log(token);
         if (id) {
           response = await axiosInstance.get(path + `/${id}`, payload);
         } else {
