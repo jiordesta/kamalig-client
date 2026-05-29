@@ -14,7 +14,6 @@ import FastOrderInput from "../inputs/FastOrderInput";
 
 //TODO: needs to be refactored
 export default function TransactionModal({ payload }: ModalProps) {
-  console.log(payload);
   const { closeModal } = useModal();
   const dispatch = useDispatch<AppDispatch>();
   const { token } = useSelector((state: RootState) => state.auth);
