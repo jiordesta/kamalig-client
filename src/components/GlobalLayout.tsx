@@ -35,7 +35,7 @@ export default function GlobalLayout({
     setModal({ type, action, payload });
   };
   const closeModal = () => setModal(null);
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { token, user } = useSelector((state: RootState) => state.auth);
   const { device } = useSelector((state: RootState) => state.config);
   const [showAuth, setShowAuth] = useState(false);
 
@@ -48,6 +48,10 @@ export default function GlobalLayout({
       if (!token) {
         setShowAuth(true);
       } else {
+        if (!user?.userRole) {
+          setShowAuth(true);
+        }
+
         dispatch(authenticate({ token: token })).then((res: any) => {
           if (res.error) {
             const issue = diagnoseError(res.error);
@@ -61,7 +65,9 @@ export default function GlobalLayout({
               toast(res.error.message);
             }
           } else {
-            setShowAuth(false);
+            if (res.payload.user.userRole) {
+              setShowAuth(false);
+            }
           }
         });
       }
