@@ -120,7 +120,7 @@ export default function TransactionModal({ payload }: ModalProps) {
             value={form}
             setter={setForm}
             item={item}
-            orderItems={payload?.order?.orderItems}
+            items={payload?.data?.transactionItems}
             activeInput={activeInput}
             setActiveInput={setActiveInput}
           />
