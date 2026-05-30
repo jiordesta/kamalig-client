@@ -47,6 +47,21 @@ export default function ReportModal({ payload }: ModalProps) {
     fetchInitialData();
   }, [refresh, token, dispatch]);
 
+  useEffect(() => {
+    if (items && items.length > 0 && form.items.length === 0) {
+      const zeroedItemsTemplate = items.map((item: any) => ({
+        itemId: item.id,
+        quantity: 0,
+        additional: [] as number[],
+      }));
+
+      setForm((prev) => ({
+        ...prev,
+        items: zeroedItemsTemplate,
+      }));
+    }
+  }, [items]);
+
   const handleCallBackCall = async () => {
     setLoading(true);
     try {
@@ -100,7 +115,7 @@ export default function ReportModal({ payload }: ModalProps) {
             value={form}
             setter={setForm}
             item={item}
-            orderItems={payload?.order?.orderItems}
+            items={payload?.data?.reportItems}
             activeInput={activeInput}
             setActiveInput={setActiveInput}
           />

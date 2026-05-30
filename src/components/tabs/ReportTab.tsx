@@ -68,7 +68,7 @@ export default function ReportTab() {
       {
         label: "Product",
         dkey: "productName",
-        col: 7,
+        col: 4,
       },
       {
         label: "Brand",
@@ -84,6 +84,20 @@ export default function ReportTab() {
         label: "Actual",
         dkey: "reportQuantity",
         col: 5,
+      },
+      {
+        label: "Match?",
+        dkey: "match",
+        col: 3,
+        typeValueRenderer: (value: boolean) => {
+          return (
+            <h1
+              className={`whitespace-nowrap overflow-hidden ${value ? "text-green-500" : "text-red-500"}`}
+            >
+              {value ? "Yes" : "No"}
+            </h1>
+          );
+        },
       },
     ];
 
@@ -104,7 +118,7 @@ export default function ReportTab() {
 
     openModal(ModalType.DISPLAY, ModalAction.DISPLAY, {
       displayHeaders: displayHeaders,
-      title: "Stock Flow",
+      title: `SHOW REPORT`,
       callBack: callBack,
     });
   };

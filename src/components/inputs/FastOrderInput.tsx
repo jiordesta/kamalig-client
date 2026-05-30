@@ -1,3 +1,4 @@
+// Replace your current file structure with this cleaner setup:
 import { useEffect, useState } from "react";
 import { updateFormField, upsertItem, type AnyForm } from "../../libs/utils";
 import toast from "react-hot-toast";
@@ -7,7 +8,7 @@ interface FastOrderInputProps {
   value: AnyForm;
   setter: any;
   activeInput: any;
-  orderItems: any;
+  items: any;
   setActiveInput: React.Dispatch<React.SetStateAction<any>>;
 }
 
@@ -17,73 +18,68 @@ export default function FastOrderInput({
   setter,
   activeInput,
   setActiveInput,
-  orderItems,
 }: FastOrderInputProps) {
   const [isActive, setIsActive] = useState(false);
   const [wasClicked, setWasClicked] = useState(false);
 
   const { id, productName, brand, quantity } = item;
 
-  const itemForm = {
+  const currentFormItem = value?.items?.find((i: any) => i.itemId === id) || {
     itemId: id,
-    quantity:
-      orderItems?.find((item: any) => item.inventoryItemId === id)?.quantity ||
-      0,
+    quantity: 0,
     additional: [] as number[],
   };
 
-  const [form, setForm] = useState(itemForm);
-
-  useEffect(() => {
-    setForm(value?.items?.find((item: any) => item.itemId === id) || itemForm);
-  }, []);
+  const currentQuantity = currentFormItem.quantity;
+  const currentAdditional = currentFormItem.additional;
 
   useEffect(() => {
     if (activeInput?.id !== id) {
-      if (isActive && form.quantity !== 0) {
+      if (isActive && currentQuantity !== 0) {
         setWasClicked(true);
 
         const lastAdditionalValue =
-          form?.additional[form?.additional?.length - 1];
-
+          currentAdditional[currentAdditional.length - 1];
         if (!lastAdditionalValue || lastAdditionalValue !== 0) {
-          updateFormField("additional", [...form.additional, 0], setForm);
+          const updatedAdditional = [...currentAdditional, 0];
+          updateParent({ additional: updatedAdditional });
         }
       }
       setIsActive(false);
     }
   }, [activeInput]);
 
+  const updateParent = (updatedFields: Partial<typeof currentFormItem>) => {
+    const nextItemState = { ...currentFormItem, ...updatedFields };
+    const updatedItemsList = upsertItem(
+      value.items || [],
+      nextItemState,
+      "itemId",
+    );
+    updateFormField("items", updatedItemsList, setter);
+  };
+
   const onUpdate = (input: number) => {
-    if (input < 0 && form.quantity <= 0) {
+    if (input < 0 && currentQuantity <= 0) {
       toast.error("Invalid");
       return;
     }
 
     if (input === 0) {
-      updateFormField("additional", [], setForm);
-      updateFormField("quantity", 0, setForm);
       setWasClicked(false);
+      updateParent({ quantity: 0, additional: [] });
       return;
     }
 
     if (wasClicked) {
-      const lastIndex = form.additional.length - 1;
-
-      const newAdditional = [...form.additional];
-      newAdditional[lastIndex] =
-        input === 0 ? 0 : (newAdditional[lastIndex] || 0) + input;
-
-      updateFormField("additional", newAdditional, setForm);
+      const lastIndex = currentAdditional.length - 1;
+      const newAdditional = [...currentAdditional];
+      newAdditional[lastIndex] = (newAdditional[lastIndex] || 0) + input;
+      updateParent({ additional: newAdditional });
     } else {
-      const newQuantity = input === 0 ? 0 : form.quantity + input;
-      updateFormField("quantity", newQuantity, setForm);
+      updateParent({ quantity: currentQuantity + input });
     }
   };
-
-  useEffect(() => {
-    updateFormField("items", upsertItem(value.items, form, "itemId"), setter);
-  }, [form]);
 
   const FastOrderNumberInput = () => {
     const buttonStyle =
@@ -92,16 +88,6 @@ export default function FastOrderInput({
     return (
       <div className="flex gap-2">
         <div className="flex flex-row gap-2 justify-end w-full">
-          {/* <button
-            className={buttonStyle}
-            onClick={() => {
-              updateFormField("additional", [], setForm);
-              updateFormField("quantity", 0, setForm);
-              setWasClicked(false);
-            }}
-          >
-            reset
-          </button> */}
           <button className={buttonStyle} onClick={() => onUpdate(0)}>
             clear
           </button>
@@ -138,9 +124,9 @@ export default function FastOrderInput({
         <h1 className="col-span-4 font-bold uppercase">{productName}</h1>
         <h1 className="col-span-4 font-bold uppercase">{brand}</h1>
         <div className="col-span-12 flex gap-2 w-full justify-end">
-          {form.quantity > 0 && <h1>{form.quantity}box</h1>}
+          {currentQuantity > 0 && <h1>{currentQuantity}box</h1>}
           <div className="flex gap-2">
-            {form?.additional?.map((additional, index) => {
+            {currentAdditional?.map((additional: any, index: any) => {
               if (additional === 0) return null;
               return (
                 <div key={index}>
@@ -152,9 +138,7 @@ export default function FastOrderInput({
         </div>
       </div>
       <div
-        className={`overflow-hidden transition-all duration-250 ease-in-out ${
-          isActive ? "max-h-40" : "max-h-0"
-        }`}
+        className={`overflow-hidden transition-all duration-250 ease-in-out ${isActive ? "max-h-40" : "max-h-0"}`}
       >
         <div className="px-4 p-2">
           <FastOrderNumberInput />
